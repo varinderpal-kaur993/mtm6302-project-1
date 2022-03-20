@@ -46,7 +46,9 @@ const data = {
     ],
   }
   const $ideas = document.getElementById ('container')
-
+  const input = document.getElementById('edit-idea')
+  const $form = document.getElementById('popup')
+  let editIndex
 function makeIdeas(){
   const form = []
   // use for loop to iterate over colors array
@@ -54,16 +56,17 @@ function makeIdeas(){
     
     // adds HTML string to html array9
     let $html = `<div class="card">
-    <div class ="button" >
+    <div class ="button btn-score" >
     <button type="button" id ="click" class="btn-upvote" aria-label="Close" data-index="${index}">+</button>
     <h5>${data.ideas[index].score}</h5>    
-    <button type="button" class="btn=downvote" aria-label="Close" data-index="${index}">-</button></div>
+    <button type="button" class="btn-downvote" aria-label="Close" data-index="${index}">-</button></div>
     <div class="card-body">
-      <h5 class="card-title">${data.ideas[index].username} ${ (data.ideas[index].username == 'currentUser' )? 'you' : ''}</h5>
+      <h5 class="card-title">${data.ideas[index].username} ${ (data.ideas[index].username == 'currentUser' )? 'you' : ''}</h5> 
     `
       if (data.ideas[index].username == 'currentUser' ){
-      $html +=`<div class  ="btn-container "><button type="button" class="btn-edit"aria-label="Close" data-index="${index}">Edit</button>
-      <button type="button" class="btn-delete" aria-label="Close" data-index="${index}">Delete</button></div>`}
+      $html +=`<div class  ="btn-container ">
+      <button type="button" class="btn-delete" aria-label="Close" data-index="${index}"><i class="fa-solid fa-trash-can"></i>Delete</button>
+      <button type="button" class="btn-edit"aria-label="Close" data-index="${index}"><i class="fa-solid fa-pen"></i>Edit</button></div>`}
 
       $html +=`  <p class="card-text">${data.ideas[index].content}</p></div> </div>`
       
@@ -82,18 +85,63 @@ $ideas.addEventListener('click' , function(e){
     data.ideas.splice(index , 1)
   makeIdeas()
   }
-  // if (e.target.classList.contains('btn-upvote')) {
+  if (e.target.classList.contains('btn-upvote')) {
   
-  //   const index = e.target.dataset.index
+    const index = e.target.dataset.index
   
-  //   data.ideas.(index , 1)
-  // makeIdeas()
-  // }
-  // if (e.target.classList.contains('btn-downvote')) {
+    data.ideas[index].score++
+  makeIdeas()
+  }
+  if (e.target.classList.contains('btn-downvote')) {
   
-  //   const index = e.target.dataset.index
-  //   data.ideas.reduce(index)
-  // makeIdeas()
-  // }
+    const index = e.target.dataset.index
+    console.log(index)
+    data.ideas[index].score--
+  makeIdeas()
+  }
+  if (e.target.classList.contains('btn-edit')) {
+ 
+  $form.classList.add('show')
+    const index = e.target.dataset.index
+    console.log(index)
+   
+    input.value = data.ideas[index].content
+    editIndex = index
+
+  }
 })
+
+
+const $cancel = document.getElementById('btnC')
+$cancel.addEventListener('click', function (e){
+  e.preventDefault()
+  $form.classList.remove('show')
+}
+)
+
+const update = document.getElementById('btnU')
+update.addEventListener('click', function (e){
+  e.preventDefault()
+  $form.classList.remove('show')
+   data.ideas[editIndex].content = input.value 
+   console.log(editIndex)
+   makeIdeas()
+}
+)
+const $addtext = document.getElementById('idea')
+
+const add = document.getElementById('add')
+add.addEventListener('click', function (e){
+  e.preventDefault()
+  
+  data.ideas.push({
+    username: data.currentUser,
+    content: $addtext.value,
+    score:0
+  
+  })
+  $addtext.value = ""
+   makeIdeas()
+}
+)
 
